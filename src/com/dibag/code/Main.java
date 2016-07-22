@@ -1,10 +1,7 @@
 package com.dibag.code;
 
-import java.util.UUID;
-
 import com.dibag.code.config.Generate;
 import com.dibag.code.config.GenerateConfig;
-import com.dibag.code.util.FreemarkerUtil;
 
 public class Main {
 
@@ -24,14 +21,15 @@ public class Main {
 		generateConfig.setJdbcUrl( "jdbc:mysql://127.0.0.1:3306/dbg_cms?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&amp;autoReconnectForPools=true" );
 		generateConfig.setJdbcUserName( "root" );
 		generateConfig.setJdbcPassword( "root" );
-		generateConfig.setLayers( "controller,mapperxml,entity,jsp,mapper,service" );
 		generateConfig.setProjectName( "dibage-cms-pro" );
 		generateConfig.setSaveFilePath( "F:/lins/test" );
 		
 		generateConfig.setTables( "" );
 		generateConfig.setTemplateBasePath( "" );
 		
-		new Generate( generateConfig ).run();
+		generateConfig.initDefaultDirectory();
+		Generate generate = new Generate( generateConfig );
+		generate.run();
 	}
 
 }

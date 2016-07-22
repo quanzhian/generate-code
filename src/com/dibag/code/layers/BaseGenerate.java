@@ -3,10 +3,9 @@ package com.dibag.code.layers;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import com.dibag.code.config.BizType;
 import com.dibag.code.config.Generate;
+import com.dibag.code.entity.Layer;
 import com.dibag.code.entity.TableName;
 import com.dibag.code.util.FreemarkerUtil;
 
@@ -21,15 +20,14 @@ public class BaseGenerate {
 	
 	private Generate generate;
 	
-	private FreemarkerUtil freemarkerUtil;
+	private FreemarkerUtil freemarkerUtil = new FreemarkerUtil();
 	
-	private Map<String, String> parmMap = new LinkedHashMap<String, String>();
-	
-	private Map<String, BizType> enumMap = new LinkedHashMap<String, BizType>();
+	public BaseGenerate() {
+	    
+    }
 	
 	public BaseGenerate(Generate generate){
 		this.generate = generate;
-		this.freemarkerUtil = new FreemarkerUtil();
 	}
 	
 	public List<TableName> getTableNames() {
@@ -40,105 +38,69 @@ public class BaseGenerate {
 		this.tableNames = tableNames;
 	}
 	
-	public Map<String, String> getParmMap() {
-		return parmMap;
-	}
-
-	public void setParmMap( Map<String, String> parmMap ) {
-		this.parmMap = parmMap;
-	}
-	
 	public Generate getGenerate() {
 		return generate;
+	}
+	
+	public void setGenerate( Generate generate ) {
+		this.generate = generate;
 	}
 
 	public FreemarkerUtil getFreemarkerUtil() {
 		return freemarkerUtil;
 	}
-
-	public Map<String, BizType> getEnumMap() {
-		return enumMap;
-	}
-
-	/**
-	 * 添加
-	 * @param key 模板文件名称
-	 * @param value 生成后保存的路径   类似 "E:/workspace/freemarkprj/page"全路径
-	 * @param bizType 业务枚举类型
-	 */
-	public void put(String key , String value , BizType bizType) {
-	    parmMap.put( key, value );
-	    enumMap.put( key, bizType );
-    }
-
-	/**
-	 * 生成
-	 */
-	public void generateAllCode() {
-	    for( Entry<String, String> entry : parmMap.entrySet() ) {
-	        generateCode( entry.getKey(), entry.getValue() );
-        }
-    }
 	
 	/**
 	 * 生成
-	 * @param templateName 模板名称
-	 * @param saveFilePath 模板生成后保存路径 类似 "E:/workspace/freemarkprj/page"全路径
 	 */
-	public void generateCode(String templateName,String saveFilePath){
+	public void generateCode(){
+		List<Layer> layers = generate.getGenerateConfig().getLayers();
 		for( TableName tableName : tableNames ) {
-			Map<String, Object> _paramMap = new LinkedHashMap<String, Object>();
-			_paramMap.put( "table", tableName );
-			_paramMap.put( "generateConfig", generate.getGenerateConfig() );
-			String _fileName = getFullSaveFilePath( tableName, templateName , saveFilePath);
-			if(_fileName != null){
-				freemarkerUtil.fprint( templateName, _paramMap, saveFilePath.concat( "/" ).concat( _fileName ) );
-			}
+			for( Layer layer : layers ) {
+				Map<String, Object> _paramMap = new LinkedHashMap<String, Object>();
+				_paramMap.put( "table", tableName );
+				_paramMap.put( "generateConfig", generate.getGenerateConfig() );
+				String _fileName = getFileName(tableName,layer);
+				if(_fileName != null){
+					String _savePath = layer.getDir().concat( "/" ).concat( _fileName ).concat( layer.getPrefix() );
+					freemarkerUtil.fprint( layer.getTemplateName(), _paramMap, _savePath );
+				}
+            }
         }
 	}
 	
-	private String getFullSaveFilePath(TableName tableName, String key , String saveFilePath) {
-	    if(BizType.Controller == enumMap.get( key )){
-	    	return tableName.getControllerName().concat( ".java" );
-	    }
-	    if(BizType.Entity == enumMap.get( key )){
-	    	return tableName.getEntityName().concat( ".java" );
-	    }
-	    if(BizType.Mapper == enumMap.get( key )){
-	    	return tableName.getMapperName().concat( ".java" );
-	    }
-	    if(BizType.MapperXML == enumMap.get( key )){
-	    	return tableName.getMapperName().concat( ".xml" );
-	    }
-	    if(BizType.Page_list == enumMap.get( key )){
-	    	generate.mkdir( saveFilePath.concat( "/" ).concat( tableName.getEntityNameFirst() ) );
-	    	return tableName.getEntityNameFirst().concat( "/list.jsp" );
-	    }
-	    if(BizType.Page_edit == enumMap.get( key )){
-	    	generate.mkdir( saveFilePath.concat( "/" ).concat( tableName.getEntityNameFirst() ) );
-	    	return tableName.getEntityNameFirst().concat( "/edit.jsp" );
-	    }
-	    if(BizType.Page_create == enumMap.get( key )){
-	    	generate.mkdir( saveFilePath.concat( "/" ).concat( tableName.getEntityNameFirst() ) );
-	    	return tableName.getEntityNameFirst().concat( "/create.jsp" );
-	    }
-	    if(BizType.Service == enumMap.get( key )){
-	    	return tableName.getServiceName().concat( ".java" );
-	    }
-	    if(BizType.Other == enumMap.get( key )){
-	    	return extendFunc( tableName, key, saveFilePath );
-	    }
-	    return null;
-    }
-	
 	/**
-	 * 子类实现扩展
+	 * 获取文件名称
 	 * @param tableName
-	 * @param key
-	 * @param saveFilePath
+	 * @param layer
 	 * @return
 	 */
-	public String extendFunc(TableName tableName, String key , String saveFilePath) {
+	protected String getFileName(TableName tableName,Layer layer) {
+	    if(layer.getTemplateName().equalsIgnoreCase( "controller.ftl" )){
+	    	return tableName.getControllerName();
+	    }
+	    if(layer.getTemplateName().equalsIgnoreCase( "entity.ftl" )){
+	    	return tableName.getEntityName();
+	    }
+	    if(layer.getTemplateName().equalsIgnoreCase( "mapper.ftl" )){
+	    	return tableName.getMapperName();
+	    }
+	    if(layer.getTemplateName().equalsIgnoreCase( "mapper-xml.ftl" )){
+	    	return tableName.getMapperName();
+	    }
+	    if(layer.getPrefix().contains( ".jsp" )){
+	    	generate.mkdir( layer.getDir().concat( "/" ).concat( tableName.getEntityNameFirst() ) );
+	    	return tableName.getEntityNameFirst();
+	    }
+	    if(layer.getPrefix().contains( "service.ftl" )){
+	    	return tableName.getServiceName();
+	    }
+	    if(layer.getTemplateName().equalsIgnoreCase( "nodejs_sequelize_model.ftl" )){
+	    	return tableName.getName();
+	    }
+	    if(layer.getTemplateName().equalsIgnoreCase( "nodejs_sequelize_route.ftl" )){
+	    	return tableName.getName().concat( "s" );
+	    }
 	    return null;
     }
 }

@@ -36,7 +36,7 @@ import ${generateConfig.basePackage}.constant.ExceptionCode;
  */
 @RequestMapping(value="/admin/${table.entityNameFirst}")
 @Controller
-public class ${table.entityName}AdminController {
+public class ${table.controllerName} {
 	
 	private static Logger logger = LoggerFactory.getLogger( ${table.entityName}AdminController.class );
 	

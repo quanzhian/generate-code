@@ -16,6 +16,11 @@ public class TableField {
 	 * 表字段类型
 	 */
 	private String columnType;
+	
+	/**
+	 * 表字段类型(全大写的)
+	 */
+	private String columnTypeBig;
 
 	/**
 	 * 表注释
@@ -31,6 +36,11 @@ public class TableField {
 	 * 实体类的字段类型
 	 */
 	private String entityType;
+	
+	/**
+	 * 实体类的字段类型(全部大写)
+	 */
+	private String entityTypeBig;
 
 	/**
 	 * 是否是主键
@@ -56,6 +66,7 @@ public class TableField {
 
 	public void setColumnType( String columnType ) {
 		this.columnType = columnType;
+		this.columnTypeBig = columnType.toUpperCase();
 	}
 
 	public String getComment() {
@@ -80,6 +91,7 @@ public class TableField {
 
 	public void setEntityType( String entityType ) {
 		this.entityType = entityType;
+		this.entityTypeBig = entityType.toUpperCase();
 	}
 
 	public boolean isPK() {
@@ -96,6 +108,22 @@ public class TableField {
 
 	public void setEntityFieldFirst( String entityFieldFirst ) {
 		this.entityFieldFirst = entityFieldFirst;
+	}
+
+	public String getColumnTypeBig() {
+		return columnTypeBig;
+	}
+
+	public void setColumnTypeBig( String columnTypeBig ) {
+		this.columnTypeBig = columnTypeBig;
+	}
+
+	public String getEntityTypeBig() {
+		return entityTypeBig;
+	}
+
+	public void setEntityTypeBig( String entityTypeBig ) {
+		this.entityTypeBig = entityTypeBig;
 	}
 
 }

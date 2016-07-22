@@ -1,5 +1,11 @@
 package com.dibag.code.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.dibag.code.entity.Layer;
+import com.dibag.code.util.StringUtils;
+
 /**
  * 配置
  * @author quan
@@ -78,8 +84,8 @@ public class GenerateConfig {
 	 * 生成指定的模块 generate specific layers(selectable value:
 	 * mapper,mapperxml,service,controller,entity,jsp,util,shiro,config,api),
 	 * split with comma(,).
-	 */
-	private String layers = "mapper,mapperxml,service,controller,entity,jsp,util,shiro,config,api";
+	 */	
+	private List<Layer> lsLayer = new ArrayList<Layer>();
 
 	public String getJdbcDriver() {
 		return jdbcDriver;
@@ -185,15 +191,8 @@ public class GenerateConfig {
 		this.projectName = projectName;
 	}
 
-	public String getLayers() {
-		if(layers==null||"".equals(layers)){
-			layers = "mapper,mapperxml,service,controller,entity,jsp,util,shiro,config,api";
-		}
-		return layers;
-	}
-
-	public void setLayers( String layers ) {
-		this.layers = layers;
+	public List<Layer> getLayers() {
+		return lsLayer;
 	}
 
 	public String getControllerPackage() {
@@ -203,5 +202,38 @@ public class GenerateConfig {
 	public void setControllerPackage( String controllerPackage ) {
 		this.controllerPackage = controllerPackage;
 	}
+
+	public List<Layer> getLsLayer() {
+		return lsLayer;
+	}
+
+	public void setLsLayer( List<Layer> lsLayer ) {
+		this.lsLayer = lsLayer;
+	}
+	
+	public void initBaseDirectory() {
+		String project = getProjectName();
+		if(!StringUtils.isEmpty( project )){
+			this.saveFilePath = saveFilePath + "/" + project + "/src";
+		}
+    }
+	
+	public void addLayer(Layer layer) {
+	    lsLayer.add( layer );
+    }
+	
+	public void initDefaultDirectory() {
+		initBaseDirectory();
+		addLayer( new Layer( "mapper-xml.ftl", saveFilePath + "/resources/mybatis", ".xml" ) );
+		addLayer( new Layer( "controller.ftl", saveFilePath + "/" + getControllerPackage().replaceAll("[.]", "/"), ".java" ) );
+		addLayer( new Layer( "entity.ftl", saveFilePath + "/" + getEntityPackage().replaceAll("[.]", "/"), ".java" ) );
+		addLayer( new Layer( "jsp_create.ftl", saveFilePath + "/views", "/create.jsp" ) );
+		addLayer( new Layer( "jsp_edit.ftl", saveFilePath + "/views", "/edit.jsp" ) );
+		addLayer( new Layer( "jsp.ftl", saveFilePath + "/views", "/list.jsp" ) );
+		addLayer( new Layer( "mapper.ftl", saveFilePath + "/" + getMapperPackage().replaceAll("[.]", "/"), ".java" ) );
+		addLayer( new Layer( "service.ftl", saveFilePath + "/" + getServicePackage().replaceAll("[.]", "/"), ".java" ) );
+		addLayer( new Layer( "nodejs_sequelize_model.ftl", saveFilePath + "/nodejs/models", ".js" ) );
+		addLayer( new Layer( "nodejs_sequelize_route.ftl", saveFilePath + "/nodejs/route", ".js" ) );
+    }
 	
 }
