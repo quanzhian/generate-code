@@ -88,11 +88,11 @@ public class BaseGenerate {
 	    if(layer.getTemplateName().equalsIgnoreCase( "mapper-xml.ftl" )){
 	    	return tableName.getMapperName();
 	    }
-	    if(layer.getPrefix().contains( ".jsp" )){
+	    if(layer.getPrefix().equalsIgnoreCase( ".jsp" )){
 	    	generate.mkdir( layer.getDir().concat( "/" ).concat( tableName.getEntityNameFirst() ) );
 	    	return tableName.getEntityNameFirst();
 	    }
-	    if(layer.getPrefix().contains( "service.ftl" )){
+	    if(layer.getTemplateName().equalsIgnoreCase( "service.ftl" )){
 	    	return tableName.getServiceName();
 	    }
 	    if(layer.getTemplateName().equalsIgnoreCase( "nodejs_sequelize_model.ftl" )){

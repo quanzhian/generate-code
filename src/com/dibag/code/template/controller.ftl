@@ -219,6 +219,8 @@ public class ${table.controllerName} {
 				${table.entityName} ${table.entityNameFirst} = new ${table.entityName}();
 			<#if (table.primaryKeyType == "String")>
 			    ${table.entityNameFirst}.set${table.primaryKeyEntityNameFirst}( strId );
+		    <#else if (table.primaryKeyType == "Integer")>
+		        ${table.entityNameFirst}.set${table.primaryKeyEntityNameFirst}( ${table.primaryKeyType}.parseInt( strId ) );
 		    <#else>
 		        ${table.entityNameFirst}.set${table.primaryKeyEntityNameFirst}( ${table.primaryKeyType}.parse${table.primaryKeyType}( strId ) );
 		    </#if>
