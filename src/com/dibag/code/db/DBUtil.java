@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -104,6 +105,76 @@ public class DBUtil {
         return null;
     }
     
+	/**
+	 * translate database type into java type
+	 * @param type
+	 * @param scale
+	 * @return
+	 */
+	private String getDataType(int type,int digits){
+	        String dataType="";
+	        switch(type){
+		        case Types.VARCHAR:  //12
+	                dataType="String";
+	                break;
+		        case Types.INTEGER:    //4
+		        	dataType="Integer";
+		        	break;
+		        case Types.BIT:    //-7
+		        	dataType="Integer";
+		        	break;	
+	            case Types.LONGVARCHAR: //-1
+	                dataType="Long";
+	                break;
+	            case Types.BIGINT: //-5
+	                dataType="Long";
+	                break;    
+	            case Types.DOUBLE: //8
+				dataType = getPrecisionType();
+	                break; 
+	            case Types.REAL: //7
+				dataType = getPrecisionType();
+	                break; 
+	            case Types.FLOAT: //6
+				dataType = getPrecisionType();
+	                break;     
+	            case Types.DECIMAL:    //3
+	                dataType="BigDecimal";
+	                break;    
+	            case Types.NUMERIC: //2
+	                switch(digits){
+	                    case 0:
+	                        dataType="Integer";
+	                        break;
+	                    default:
+						dataType = getPrecisionType();
+	                }
+	                break;
+	            case Types.DATE:  //91
+	                dataType="Date";
+	                break;
+	            case Types.TIMESTAMP: //93
+	                dataType="Date";
+	                break;
+	            case Types.BLOB:
+	            	dataType = "byte[]";
+	            	break;
+	            default:
+	                dataType="String";
+	        }
+	        return dataType;
+	   }
+	
+	private String getPrecisionType() {
+		String dataType;
+		if("high".equals(generateConfig.getPrecision())){
+			dataType = "BigDecimal";
+		}else{
+			dataType = "Double";
+		}
+		return dataType;
+	}
+    
     /**
      *  获取所有的数据库表注释
      *
@@ -160,8 +231,8 @@ public class DBUtil {
 	 */
     public List<TableName> getData() throws ClassNotFoundException, SQLException, IOException {
         init();
-        String prefix = "show full fields from ";
-        PreparedStatement pstate = null;
+        //String prefix = "show full fields from ";
+        //PreparedStatement pstate = null;
         List<String> tables = loadTables();
         Map<String, String> tableComments = loadTableComment();
         
@@ -179,12 +250,20 @@ public class DBUtil {
         	tableName.setPrimaryKeyEntityName( StringUtils.format( _pk ) );
         	tableName.setPrimaryKeyEntityNameFirst( StringUtils.firstUpperAndNoPrefix( _pk ) );
                    
-            pstate = conn.prepareStatement(prefix + table);
-            ResultSet results = pstate.executeQuery();
+            //pstate = conn.prepareStatement(prefix + table);
+            //ResultSet results = pstate.executeQuery();
+            ResultSet results = getDatabaseMetaData().getColumns(null, "%", table, "%");
             while ( results.next() ) {
-            	String _field = results.getString("FIELD");
-            	String _type = results.getString("TYPE");
-            	String _comment = results.getString("COMMENT");
+            	
+				String _field = results.getString("COLUMN_NAME");
+				int _digits = results.getInt("DECIMAL_DIGITS");
+				int _dataType = results.getInt("DATA_TYPE");
+				String _type = results.getString("TYPE_NAME");
+				String _comment = results.getString("REMARKS");
+				
+            	//String _field = results.getString("FIELD");
+            	//String _type = results.getString("TYPE");
+            	//String _comment = results.getString("COMMENT");
                 
                 TableField tableField = new TableField();
                 tableField.setColumnName( _field );
@@ -192,10 +271,10 @@ public class DBUtil {
                 tableField.setComment( _comment );
                 tableField.setEntityField( StringUtils.format( _field ) );
                 tableField.setEntityFieldFirst( StringUtils.firstUpperAndNoPrefix( _field ) );
-                tableField.setEntityType( processType( _type ) );
+                tableField.setEntityType( getDataType( _dataType, _digits ) ); //processType( _type )
                 
                 if(tableName.getPrimaryKey() != null && tableName.getPrimaryKey().equals( _field )){
-                	tableName.setPrimaryKeyType( processType( _type ) );
+                	tableName.setPrimaryKeyType( getDataType( _dataType, _digits ) );//processType( _type )
                 	tableField.setPK( true );
                 }
  

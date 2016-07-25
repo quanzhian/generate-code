@@ -79,6 +79,11 @@ public class GenerateConfig {
 	 * 项目名称
 	 */
 	private String projectName = "";
+	
+	/**
+	 * 生成高精度类型，默认high
+	 */
+	private String precision = "high";
 
 	/**
 	 * 生成指定的模块 generate specific layers(selectable value:
@@ -211,6 +216,14 @@ public class GenerateConfig {
 		this.lsLayer = lsLayer;
 	}
 	
+	public String getPrecision() {
+		return precision;
+	}
+
+	public void setPrecision( String precision ) {
+		this.precision = precision;
+	}
+
 	public void initBaseDirectory() {
 		String project = getProjectName();
 		if(!StringUtils.isEmpty( project )){
