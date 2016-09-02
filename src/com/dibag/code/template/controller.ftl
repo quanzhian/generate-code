@@ -173,7 +173,7 @@ public class ${table.controllerName} {
     public JsonResult create(${table.entityName} ${table.entityNameFirst}){
 		JsonResult ajaxResult = null;
 		try {
-			${table.entityNameFirst}Service.create(${table.entityNameFirst});
+			${table.entityNameFirst}Service.createSelective(${table.entityNameFirst});
 			ajaxResult = new JsonResult( ExceptionCode.SUCCESSFUL, ${table.entityNameFirst} );
 		} catch (Exception e) {
 			logger.error( e.getMessage(),e );
@@ -219,7 +219,7 @@ public class ${table.controllerName} {
 				${table.entityName} ${table.entityNameFirst} = new ${table.entityName}();
 			<#if (table.primaryKeyType == "String")>
 			    ${table.entityNameFirst}.set${table.primaryKeyEntityNameFirst}( strId );
-		    <#else if (table.primaryKeyType == "Integer")>
+		    <#elseif (table.primaryKeyType == "Integer")>
 		        ${table.entityNameFirst}.set${table.primaryKeyEntityNameFirst}( ${table.primaryKeyType}.parseInt( strId ) );
 		    <#else>
 		        ${table.entityNameFirst}.set${table.primaryKeyEntityNameFirst}( ${table.primaryKeyType}.parse${table.primaryKeyType}( strId ) );
@@ -227,7 +227,6 @@ public class ${table.controllerName} {
 	            ${table.entityNameFirst}s.add( ${table.entityNameFirst} );
             }
 			${table.entityNameFirst}Service.deleteBatch( ${table.entityNameFirst}s );
-			${table.entityNameFirst}Service.deleteBatch(${table.entityNameFirst}s);
 			ajaxResult = new JsonResult( ExceptionCode.SUCCESSFUL );
 		} catch (Exception e) {
 			logger.error( e.getMessage(),e );

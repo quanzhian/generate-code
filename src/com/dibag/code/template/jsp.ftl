@@ -14,20 +14,46 @@
 <title>${table.entityComment}列表</title>
 </head>
 <body class="gray-bg">
+<!-- 参考
+http://bootstrap-table.wenzhixin.net.cn/zh-cn/examples/ 
+Server Side: http://jsfiddle.net/4r6g4cfu/3/
+-->
 	<div class="col-sm-12">
-		<div class="alert alert-success" role="alert">事件结果</div>
-		<div class="btn-group hidden-xs ext-bottom-1" role="group">
-			<a class="btn btn-outline btn-default" href="${r"$"}{ctx}/admin/${table.entityNameFirst}/create">
-				<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
-			</a>
-			<a class="btn btn-outline btn-default">
-				<i class="glyphicon glyphicon-heart" aria-hidden="true"></i>
-			</a>
-			<a class="btn btn-outline btn-default">
-				<i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
-			</a>
-		</div>
-		<table class="table table-striped table-bordered table-hover">
+		<div class="alert alert-success" role="alert"></div>		
+		<div class="fixed-table-toolbar">
+			<div class="bars pull-left m-b-lg">
+				<div class="btn-group hidden-xs" id="exampleToolbar"
+					role="group">
+					<a class="btn btn-outline btn-default" href="${r"$"}{ctx}/admin/${table.entityNameFirst}/create">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+					</a>
+					<a class="btn btn-outline btn-default">
+						<i class="glyphicon glyphicon-heart" aria-hidden="true"></i>
+					</a>
+					<a class="btn btn-outline btn-default">
+						<i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+					</a>
+				</div>
+			</div>
+			<div class="columns columns-right btn-group pull-right">
+				<a class="btn btn-default btn-outline" href="${r"$"}{ctx}/admin/${table.entityNameFirst}/"
+					name="refresh" title="刷新">
+					<i class="glyphicon glyphicon-repeat"></i>
+				</a>
+				<a class="btn btn-default btn-outline"
+					name="toggle" title="切换">
+					<i class="glyphicon glyphicon-list-alt"></i>
+				</a>
+			</div>
+			<div class="pull-right search col-sm-4 m-b-lg">
+			<div class="input-group">
+                 <input type="text" name="searchText" value="${r"$"}{searchText}" placeholder="请输入关键词" class="input-sm form-control input-outline"> 
+                 <span class="input-group-btn"><button type="button" class="btn btn-sm btn-primary"> 搜索</button> </span>
+            </div>
+			</div>
+		</div>		
+		
+		<table id="exampleTableToolbar" class="table table-striped table-bordered table-hover">
 			<thead>
 				<tr>
 					<th scope="col"><input type="checkbox" class="check-all"></th>

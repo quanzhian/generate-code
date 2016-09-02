@@ -6,6 +6,7 @@ import java.util.Map;
 import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import ${generateConfig.entityPackage}.${table.entityName};
+import org.apache.ibatis.annotations.Param;
 
 /**
 *${table.entityComment},Mapper接口
@@ -81,6 +82,12 @@ public interface ${table.mapperName} {
 	public void createSelective(${table.entityName} ${table.entityNameFirst});
 	
 	/**
+	 * 有选择的批量创建新数据
+	 * @param list
+	 */
+	public void createSelectiveBatch(List<${table.entityName}> list);
+	
+	/**
 	 * 根据ID更新
 	 * @param ${table.entityNameFirst}
 	 */
@@ -97,6 +104,13 @@ public interface ${table.mapperName} {
 	 * @param list
 	 */
 	public void updateSelectiveBatch(List<${table.entityName}> list);
+	
+	/**
+	 * 根据条件进行更新
+	 * @param ${table.entityNameFirst} 更新内容
+	 * @param condition 条件
+	 */
+	public void updateByWhere( @Param("item") ${table.entityName} ${table.entityNameFirst} , @Param("condition") ${table.entityName} condition );
 	
 	/**
 	 * 根据ID删除

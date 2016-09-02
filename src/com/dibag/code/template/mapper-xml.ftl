@@ -92,6 +92,28 @@
 		</if>
 		</#list>
 		</trim>				
+    </insert>
+    
+    <!-- 批量插入有值的字段数据 -->
+    <insert id="createSelectiveBatch" parameterType="java.util.List" keyProperty="${table.primaryKeyEntityName}" useGeneratedKeys="true">
+		INSERT INTO ${table.name}
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+		<#list table.tableFields as tableField>
+		<if test="${tableField.entityField} != null" >
+		${tableField.columnName},
+		</if>
+		</#list>
+		</trim>
+		values 
+		<foreach collection="list" item="item" index="index" open="" close="" separator="">
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+		<#list table.tableFields as tableField>
+		<if test="${tableField.entityField} != null" >
+		${r"#"}{item.${tableField.entityField}},
+		</if>
+		</#list>
+		</trim>
+		</foreach>
     </insert>    
     
     <!-- 根据ID更新数据 -->
@@ -135,6 +157,27 @@
 		</set>
 		WHERE ${table.primaryKey} = ${r"#"}{${table.primaryKeyEntityName}}
 	</foreach>
+    </update>    
+    
+    <!-- 根据条件更新数据 -->
+    <update id="updateByWhere" >
+		UPDATE ${table.name}
+		<set>
+		<#list table.tableFields as tableField>
+		<#if (table.primaryKey != tableField.columnName)>
+		<if test="${tableField.entityField} != null" >
+		${tableField.columnName} = ${r"#"}{item.${tableField.entityField}},
+		</if>
+		</#if>
+		</#list>
+		</set>
+		<where>
+		<#list table.tableFields as tableField>
+		<if test="condition != null and ${tableField.entityField} != null" >
+		    and ${tableField.columnName} = ${r"#"}{condition.${tableField.entityField}}
+		</if>
+		</#list>
+		</where>
     </update>    
     
     <!-- 根据ID删除数据 -->

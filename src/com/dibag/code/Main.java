@@ -2,13 +2,14 @@ package com.dibag.code;
 
 import com.dibag.code.config.Generate;
 import com.dibag.code.config.GenerateConfig;
+import com.dibag.code.util.FreemarkerUtil;
 
 public class Main {
 
 	public static void main( String[] args ) {
 		// TODO Auto-generated method stub
 		//System.out.println(UUID.randomUUID().toString().replace( "-", "" ).length());
-		//System.out.println(new FreemarkerUtil().getTemplate( "controller.ftl" ));
+		//System.out.println(new FreemarkerUtil().getTemplate( "jsp.ftl" ));
 		
 		GenerateConfig generateConfig = new GenerateConfig();
 		generateConfig.setBasePackage( "com.dibage.pro" );

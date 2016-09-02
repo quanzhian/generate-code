@@ -88,7 +88,7 @@ public class BaseGenerate {
 	    if(layer.getTemplateName().equalsIgnoreCase( "mapper-xml.ftl" )){
 	    	return tableName.getMapperName();
 	    }
-	    if(layer.getPrefix().equalsIgnoreCase( ".jsp" )){
+	    if(layer.getPrefix().contains( ".jsp" )){
 	    	generate.mkdir( layer.getDir().concat( "/" ).concat( tableName.getEntityNameFirst() ) );
 	    	return tableName.getEntityNameFirst();
 	    }

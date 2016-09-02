@@ -112,6 +112,14 @@ public class ${table.serviceName} {
     }
     
 	/**
+	 * 有选择的批量创建新数据
+	 * @param list
+	 */
+	public void createSelectiveBatch(List<${table.entityName}> list){
+	   ${table.entityNameFirst}Mapper.createSelectiveBatch(list);
+	}    
+    
+	/**
 	 * 根据ID更新
 	 * @param ${table.entityNameFirst}
 	 */
@@ -126,6 +134,15 @@ public class ${table.serviceName} {
 	public void updateSelective(${table.entityName} ${table.entityNameFirst}){
 	   ${table.entityNameFirst}Mapper.updateSelective(${table.entityNameFirst});
     }
+    
+	/**
+	 * 根据条件进行更新
+	 * @param ${table.entityNameFirst} 更新内容
+	 * @param condition 条件
+	 */
+	public void updateByWhere( ${table.entityName} ${table.entityNameFirst} , ${table.entityName} condition ){
+	   ${table.entityNameFirst}Mapper.updateByWhere(${table.entityNameFirst},condition);
+	}  
     
 	/**
 	 * 根据ID有条件的批量更新
