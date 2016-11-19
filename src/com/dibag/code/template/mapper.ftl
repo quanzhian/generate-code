@@ -98,12 +98,6 @@ public interface ${table.mapperName} {
 	 * @param ${table.entityNameFirst}
 	 */
 	public void updateSelective(${table.entityName} ${table.entityNameFirst});
-		
-	/**
-	 * 根据ID有条件的批量更新
-	 * @param list
-	 */
-	public void updateSelectiveBatch(List<${table.entityName}> list);
 	
 	/**
 	 * 根据条件进行更新
@@ -125,8 +119,8 @@ public interface ${table.mapperName} {
 	public void deleteBy(${table.entityName} ${table.entityNameFirst});
 	
 	/**
-	 * 根据条件进行批量删除
+	 * 根据ID集合进行批量删除
 	 * @param list
 	 */
-	public void deleteBatch(List<${table.entityName}> list);
+	public void deleteBatch(List<${table.primaryKeyType}> list);
 }

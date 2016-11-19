@@ -97,22 +97,18 @@
     <!-- 批量插入有值的字段数据 -->
     <insert id="createSelectiveBatch" parameterType="java.util.List" keyProperty="${table.primaryKeyEntityName}" useGeneratedKeys="true">
 		INSERT INTO ${table.name}
-		<trim prefix="(" suffix=")" suffixOverrides="," >
+		(
 		<#list table.tableFields as tableField>
-		<if test="${tableField.entityField} != null" >
-		${tableField.columnName},
-		</if>
+		${tableField.columnName}<#if tableField_has_next>,</#if>
 		</#list>
-		</trim>
+		)
 		values 
-		<foreach collection="list" item="item" index="index" open="" close="" separator="">
-		<trim prefix="(" suffix=")" suffixOverrides="," >
+		<foreach collection="list" item="item" index="index" open="" close="" separator=",">
+		(
 		<#list table.tableFields as tableField>
-		<if test="item.${tableField.entityField} != null" >
-		${r"#"}{item.${tableField.entityField}},
-		</if>
+		${r"#"}{item.${tableField.entityField}}<#if tableField_has_next>,</#if>
 		</#list>
-		</trim>
+		)
 		</foreach>
     </insert>    
     
@@ -140,24 +136,7 @@
 		</#list>
 		</set>
 		WHERE ${table.primaryKey} = ${r"#"}{${table.primaryKeyEntityName}}
-    </update>
-    
-    <!-- 根据ID批量更新数据 -->
-    <update id="updateSelectiveBatch" parameterType="java.util.List">
-    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
-		UPDATE ${table.name}
-		<set>
-		<#list table.tableFields as tableField>
-		<#if (table.primaryKey != tableField.columnName)>
-		<if test="item.${tableField.entityField} != null" >
-		${tableField.columnName} = ${r"#"}{item.${tableField.entityField}},
-		</if>
-		</#if>
-		</#list>
-		</set>
-		WHERE ${table.primaryKey} = ${r"#"}{item.${table.primaryKeyEntityName}}
-	</foreach>
-    </update>    
+    </update>   
     
     <!-- 根据条件更新数据 -->
     <update id="updateByWhere" >
@@ -197,17 +176,12 @@
     	</trim>
     </delete>
     
-    <!-- 根据条件批量删除数据 -->
+    <!-- 根据ID集合批量删除数据 -->
     <delete id="deleteBatch" parameterType="java.util.List">
-    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
     	DELETE FROM ${table.name} 
-    	<trim prefix="where" prefixOverrides="and|or" >
-    	<#list table.tableFields as tableField>
-    	<if test="item.${tableField.entityField} != null and item.${tableField.entityField} != ''" >
-    	and ${tableField.columnName} = ${r"#"}{item.${tableField.entityField}}
-    	</if>
-    	</#list>
-    	</trim>
-    </foreach>
+    	WHERE ${table.primaryKey} in 
+    	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+    	${r"#"}{item}}
+    	</foreach>
     </delete>
 </mapper>
