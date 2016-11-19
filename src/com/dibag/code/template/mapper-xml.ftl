@@ -181,7 +181,7 @@
     	DELETE FROM ${table.name} 
     	WHERE ${table.primaryKey} in 
     	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
-    	${r"#"}{item}}
+    	${r"#"}{item}
     	</foreach>
     </delete>
 </mapper>
