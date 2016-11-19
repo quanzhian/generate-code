@@ -108,7 +108,7 @@
 		<foreach collection="list" item="item" index="index" open="" close="" separator="">
 		<trim prefix="(" suffix=")" suffixOverrides="," >
 		<#list table.tableFields as tableField>
-		<if test="${tableField.entityField} != null" >
+		<if test="item.${tableField.entityField} != null" >
 		${r"#"}{item.${tableField.entityField}},
 		</if>
 		</#list>
@@ -165,7 +165,7 @@
 		<set>
 		<#list table.tableFields as tableField>
 		<#if (table.primaryKey != tableField.columnName)>
-		<if test="${tableField.entityField} != null" >
+		<if test="${item != null and item.tableField.entityField} != null" >
 		${tableField.columnName} = ${r"#"}{item.${tableField.entityField}},
 		</if>
 		</#if>
@@ -173,7 +173,7 @@
 		</set>
 		<where>
 		<#list table.tableFields as tableField>
-		<if test="condition != null and ${tableField.entityField} != null" >
+		<if test="condition != null and condition.${tableField.entityField} != null" >
 		    and ${tableField.columnName} = ${r"#"}{condition.${tableField.entityField}}
 		</if>
 		</#list>
@@ -203,7 +203,7 @@
     	DELETE FROM ${table.name} 
     	<trim prefix="where" prefixOverrides="and|or" >
     	<#list table.tableFields as tableField>
-    	<if test="${tableField.entityField} != null and ${tableField.entityField} != ''" >
+    	<if test="item.${tableField.entityField} != null and item.${tableField.entityField} != ''" >
     	and ${tableField.columnName} = ${r"#"}{item.${tableField.entityField}}
     	</if>
     	</#list>
