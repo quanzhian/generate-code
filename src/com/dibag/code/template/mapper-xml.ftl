@@ -155,7 +155,7 @@
 		</#if>
 		</#list>
 		</set>
-		WHERE ${table.primaryKey} = ${r"#"}{${table.primaryKeyEntityName}}
+		WHERE ${table.primaryKey} = ${r"#"}{item.${table.primaryKeyEntityName}}
 	</foreach>
     </update>    
     
@@ -165,7 +165,7 @@
 		<set>
 		<#list table.tableFields as tableField>
 		<#if (table.primaryKey != tableField.columnName)>
-		<if test="${item != null and item.tableField.entityField} != null" >
+		<if test="item != null and item.${tableField.entityField} != null" >
 		${tableField.columnName} = ${r"#"}{item.${tableField.entityField}},
 		</if>
 		</#if>
